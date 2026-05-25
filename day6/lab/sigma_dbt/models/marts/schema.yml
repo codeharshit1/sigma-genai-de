@@ -1,0 +1,80 @@
+version: 2
+
+mart_transaction_summary:
+  description: "Mart containing summarized transaction data including revenue, failure rate, and merchant details."
+  columns:
+    - name: transaction_id
+      description: "Unique identifier for each transaction."
+    - name: merchant_name
+      description: "Name of the merchant associated with the transaction."
+    - name: total_revenue
+      description: "Total revenue from completed transactions."
+    - name: failure_rate_pct
+      description: "Percentage of failed transactions."
+    - name: transaction_count
+      description: "Total number of transactions."
+  tests:
+    - not_null:
+        column_name: merchant_id
+    - generic_test:
+        name: failure_rate_pct_range
+        arguments:
+          column_name: failure_rate_pct
+          min_value: 0
+          max_value: 100
+        description: "Ensure failure rate percentage is between 0 and 100."
+    - generic_test:
+        name: total_revenue_non_negative
+        arguments:
+          column_name: total_revenue
+          min_value: 0
+        description: "Ensure total revenue is non-negative."
+    - generic_test:
+        name: invalid_status_check
+        arguments:
+          column_name: status
+          invalid_values: ['CANCELLED']
+        description: "Check for invalid status values that should fail."
+
+```
+
+```sql
+-- models/marts/mart_transaction_summary.sql
+WITH completed_transactions AS (
+    SELECT
+        merchant_id,
+        SUM(amount) AS total_revenue
+    FROM {{ ref('fact_transactions') }}
+    WHERE status = 'COMPLETED'
+    GROUP BY merchant_id
+),
+
+transaction_counts AS (
+    SELECT
+        merchant_id,
+        COUNT(*) AS transaction_count,
+        COUNT(CASE WHEN status = 'FAILED' THEN 1 END) AS failed_count
+    FROM {{ ref('fact_transactions') }}
+    GROUP BY merchant_id
+),
+
+failure_rates AS (
+    SELECT
+        merchant_id,
+        (failed_count::DECIMAL / transaction_count) * 100 AS failure_rate_pct
+    FROM transaction_counts
+),
+
+final_summary AS (
+    SELECT
+        dm.merchant_name,
+        COALESCE(ct.total_revenue, 0) AS total_revenue,
+        COALESCE(fr.failure_rate_pct, 0) AS failure_rate_pct,
+        tc.transaction_count
+    FROM dim_merchant dm
+    LEFT JOIN completed_transactions ct ON dm.merchant_id = ct.merchant_id
+    LEFT JOIN failure_rates fr ON dm.merchant_id = fr.merchant_id
+    LEFT JOIN transaction_counts tc ON dm.merchant_id = tc.merchant_id
+)
+
+SELECT * FROM final_summary

@@ -1,0 +1,43 @@
+{
+  "file": "queries/my_query_3.sql",
+  "reviewed_at": "2026-05-25T16:26:10.355938",
+  "issues_found": 4,
+  "review": {
+    "issues": [
+      {
+        "severity": "Critical",
+        "category": "Correctness",
+        "title": "Typo in table name",
+        "line": "1",
+        "problem": "The table name 'stufdents' is incorrect. It should be 'sigma_analytics.fact_transactions'.",
+        "fix": "SELECT * FROM sigma_analytics.fact_transactions LIMIT 4;"
+      },
+      {
+        "severity": "Medium",
+        "category": "Correctness",
+        "title": "Incorrect logic for revenue calculation",
+        "line": "N/A",
+        "problem": "The query does not filter transactions by status 'COMPLETED' to calculate revenue.",
+        "fix": "SELECT SUM(amount) AS revenue FROM sigma_analytics.fact_transactions WHERE status = 'COMPLETED';"
+      },
+      {
+        "severity": "Medium",
+        "category": "Correctness",
+        "title": "Incorrect logic for failure rate calculation",
+        "line": "N/A",
+        "problem": "The query does not calculate the failure rate correctly.",
+        "fix": "SELECT (COUNT(CASE WHEN status = 'FAILED' THEN 1 END) / COUNT(*)) * 100 AS failure_rate FROM sigma_analytics.fact_transactions;"
+      },
+      {
+        "severity": "Low",
+        "category": "Readability",
+        "title": "Lack of comments",
+        "line": "1",
+        "problem": "The query lacks comments explaining its purpose and logic.",
+        "fix": "-- Fetch the first 4 records from the fact_transactions table\nSELECT * FROM sigma_analytics.fact_transactions LIMIT 4;"
+      }
+    ],
+    "corrected_sql": "-- Fetch the first 4 records from the fact_transactions table\nSELECT * FROM sigma_analytics.fact_transactions LIMIT 4;\n\n-- Calculate revenue from completed transactions\nSELECT SUM(amount) AS revenue FROM sigma_analytics.fact_transactions WHERE status = 'COMPLETED';\n\n-- Calculate failure rate\nSELECT (COUNT(CASE WHEN status = 'FAILED' THEN 1 END) / COUNT(*)) * 100 AS failure_rate FROM sigma_analytics.fact_transactions;",
+    "summary": "The query contains a typo in the table name and lacks proper logic for revenue and failure rate calculations. Comments have been added for readability."
+  }
+}

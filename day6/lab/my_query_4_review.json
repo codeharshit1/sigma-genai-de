@@ -1,0 +1,27 @@
+{
+  "file": "queries/my_query_4.sql",
+  "reviewed_at": "2026-05-25T16:26:13.839284",
+  "issues_found": 2,
+  "review": {
+    "issues": [
+      {
+        "severity": "Critical",
+        "category": "Correctness",
+        "title": "Table name typo",
+        "line": "1",
+        "problem": "The table name 'customerss' is incorrect. It should be 'dim_customer'.",
+        "fix": "select * from sigma_analytics.dim_customer;"
+      },
+      {
+        "severity": "Medium",
+        "category": "Readability",
+        "title": "Lack of column selection",
+        "line": "1",
+        "problem": "The query selects all columns from the table, which is not efficient or readable.",
+        "fix": "select customer_id, customer_name, email, tier, signup_date, city from sigma_analytics.dim_customer;"
+      }
+    ],
+    "corrected_sql": "select customer_id, customer_name, email, tier, signup_date, city from sigma_analytics.dim_customer;",
+    "summary": "The query had a critical typo in the table name and lacked specific column selection, affecting readability."
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "directory": "queries/",
+  "reviewed_at": "2026-05-25T16:26:13.841153",
+  "files_reviewed": 4,
+  "total_issues": 14,
+  "files": [
+    {
+      "file": "queries/my_query.sql",
+      "reviewed_at": "2026-05-25T16:25:57.556546",
+      "issues_found": 4,
+      "review": {
+        "issues": [
+          {
+            "severity": "Critical",
+            "category": "Correctness",
+            "title": "Incorrect table names",
+            "line": "1",
+            "problem": "The query uses incorrect table names 'my_table' and 'my_table2' instead of the actual schema tables.",
+            "fix": "Replace 'my_table' and 'my_table2' with the correct table names from the schema."
+          },
+          {
+            "severity": "Critical",
+            "category": "Correctness",
+            "title": "Missing JOIN condition",
+            "line": "1",
+            "problem": "The query is using implicit joins which can lead to Cartesian products and incorrect results.",
+            "fix": "Use explicit JOIN clauses with ON conditions."
+          },
+          {
+            "severity": "Medium",
+            "category": "Performance",
+            "title": "Implicit join syntax",
+            "line": "1",
+            "problem": "Using implicit join syntax can lead to less readable and potentially less performant queries.",
+            "fix": "Use explicit JOIN syntax."
+          },
+          {
+            "severity": "Low",
+            "category": "Readability",
+            "title": "Lack of comments",
+            "line": "1",
+            "problem": "The query lacks comments explaining the logic or purpose.",
+            "fix": "Add comments to explain the purpose and logic of the query."
+          }
+        ],
+        "corrected_sql": "SELECT m.transaction_id, m.amount, m.status, m.merchant_id, m.customer_id, m.transaction_date, m.payment_method, t.merchant_name, t.category, t.city, t.onboarded_date FROM sigma_analytics.fact_transactions m JOIN sigma_analytics.dim_merchant t ON m.merchant_id = t.merchant_id WHERE m.id = t.id AND m.name = 'John';",
+        "summary": "The query contains critical correctness issues due to incorrect table names and implicit joins. It also has performance and readability issues due to the use of implicit join syntax and lack of comments."
+      }
+    },
+    {
+      "file": "queries/my_query2.sql",
+      "reviewed_at": "2026-05-25T16:26:02.780899",
+      "issues_found": 4,
+      "review": {
+        "issues": [
+          {
+            "severity": "Critical",
+            "category": "Correctness",
+            "title": "Incorrect table usage",
+            "line": "1",
+            "problem": "The query is selecting from non-existent tables 'json_table' and 'json_table2'.",
+            "fix": "Replace 'json_table' and 'json_table2' with the correct tables from the schema."
+          },
+          {
+            "severity": "Critical",
+            "category": "Correctness",
+            "title": "Incorrect table usage",
+            "line": "2",
+            "problem": "The query is selecting from non-existent tables 'csv_table' and 'csv_table2'.",
+            "fix": "Replace 'csv_table' and 'csv_table2' with the correct tables from the schema."
+          },
+          {
+            "severity": "Medium",
+            "category": "Readability",
+            "title": "Implicit join syntax",
+            "line": "1",
+            "problem": "Using comma-separated tables in the FROM clause is an implicit join, which is less readable.",
+            "fix": "Use explicit JOIN syntax for better readability."
+          },
+          {
+            "severity": "Medium",
+            "category": "Readability",
+            "title": "Implicit join syntax",
+            "line": "2",
+            "problem": "Using comma-separated tables in the FROM clause is an implicit join, which is less readable.",
+            "fix": "Use explicit JOIN syntax for better readability."
+          }
+        ],
+        "corrected_sql": "No valid SQL to correct as the tables mentioned do not exist in the provided schema.",
+        "summary": "The provided SQL queries reference non-existent tables and use implicit join syntax, which should be corrected for readability and to align with the provided schema."
+      }
+    },
+    {
+      "file": "queries/my_query_3.sql",
+      "reviewed_at": "2026-05-25T16:26:10.355938",
+      "issues_found": 4,
+      "review": {
+        "issues": [
+          {
+            "severity": "Critical",
+            "category": "Correctness",
+            "title": "Typo in table name",
+            "line": "1",
+            "problem": "The table name 'stufdents' is incorrect. It should be 'sigma_analytics.fact_transactions'.",
+            "fix": "SELECT * FROM sigma_analytics.fact_transactions LIMIT 4;"
+          },
+          {
+            "severity": "Medium",
+            "category": "Correctness",
+            "title": "Incorrect logic for revenue calculation",
+            "line": "N/A",
+            "problem": "The query does not filter transactions by status 'COMPLETED' to calculate revenue.",
+            "fix": "SELECT SUM(amount) AS revenue FROM sigma_analytics.fact_transactions WHERE status = 'COMPLETED';"
+          },
+          {
+            "severity": "Medium",
+            "category": "Correctness",
+            "title": "Incorrect logic for failure rate calculation",
+            "line": "N/A",
+            "problem": "The query does not calculate the failure rate correctly.",
+            "fix": "SELECT (COUNT(CASE WHEN status = 'FAILED' THEN 1 END) / COUNT(*)) * 100 AS failure_rate FROM sigma_analytics.fact_transactions;"
+          },
+          {
+            "severity": "Low",
+            "category": "Readability",
+            "title": "Lack of comments",
+            "line": "1",
+            "problem": "The query lacks comments explaining its purpose and logic.",
+            "fix": "-- Fetch the first 4 records from the fact_transactions table\nSELECT * FROM sigma_analytics.fact_transactions LIMIT 4;"
+          }
+        ],
+        "corrected_sql": "-- Fetch the first 4 records from the fact_transactions table\nSELECT * FROM sigma_analytics.fact_transactions LIMIT 4;\n\n-- Calculate revenue from completed transactions\nSELECT SUM(amount) AS revenue FROM sigma_analytics.fact_transactions WHERE status = 'COMPLETED';\n\n-- Calculate failure rate\nSELECT (COUNT(CASE WHEN status = 'FAILED' THEN 1 END) / COUNT(*)) * 100 AS failure_rate FROM sigma_analytics.fact_transactions;",
+        "summary": "The query contains a typo in the table name and lacks proper logic for revenue and failure rate calculations. Comments have been added for readability."
+      }
+    },
+    {
+      "file": "queries/my_query_4.sql",
+      "reviewed_at": "2026-05-25T16:26:13.839284",
+      "issues_found": 2,
+      "review": {
+        "issues": [
+          {
+            "severity": "Critical",
+            "category": "Correctness",
+            "title": "Table name typo",
+            "line": "1",
+            "problem": "The table name 'customerss' is incorrect. It should be 'dim_customer'.",
+            "fix": "select * from sigma_analytics.dim_customer;"
+          },
+          {
+            "severity": "Medium",
+            "category": "Readability",
+            "title": "Lack of column selection",
+            "line": "1",
+            "problem": "The query selects all columns from the table, which is not efficient or readable.",
+            "fix": "select customer_id, customer_name, email, tier, signup_date, city from sigma_analytics.dim_customer;"
+          }
+        ],
+        "corrected_sql": "select customer_id, customer_name, email, tier, signup_date, city from sigma_analytics.dim_customer;",
+        "summary": "The query had a critical typo in the table name and lacked specific column selection, affecting readability."
+      }
+    }
+  ]
+}

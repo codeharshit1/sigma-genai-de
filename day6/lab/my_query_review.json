@@ -1,0 +1,43 @@
+{
+  "file": "queries/my_query.sql",
+  "reviewed_at": "2026-05-25T16:25:57.556546",
+  "issues_found": 4,
+  "review": {
+    "issues": [
+      {
+        "severity": "Critical",
+        "category": "Correctness",
+        "title": "Incorrect table names",
+        "line": "1",
+        "problem": "The query uses incorrect table names 'my_table' and 'my_table2' instead of the actual schema tables.",
+        "fix": "Replace 'my_table' and 'my_table2' with the correct table names from the schema."
+      },
+      {
+        "severity": "Critical",
+        "category": "Correctness",
+        "title": "Missing JOIN condition",
+        "line": "1",
+        "problem": "The query is using implicit joins which can lead to Cartesian products and incorrect results.",
+        "fix": "Use explicit JOIN clauses with ON conditions."
+      },
+      {
+        "severity": "Medium",
+        "category": "Performance",
+        "title": "Implicit join syntax",
+        "line": "1",
+        "problem": "Using implicit join syntax can lead to less readable and potentially less performant queries.",
+        "fix": "Use explicit JOIN syntax."
+      },
+      {
+        "severity": "Low",
+        "category": "Readability",
+        "title": "Lack of comments",
+        "line": "1",
+        "problem": "The query lacks comments explaining the logic or purpose.",
+        "fix": "Add comments to explain the purpose and logic of the query."
+      }
+    ],
+    "corrected_sql": "SELECT m.transaction_id, m.amount, m.status, m.merchant_id, m.customer_id, m.transaction_date, m.payment_method, t.merchant_name, t.category, t.city, t.onboarded_date FROM sigma_analytics.fact_transactions m JOIN sigma_analytics.dim_merchant t ON m.merchant_id = t.merchant_id WHERE m.id = t.id AND m.name = 'John';",
+    "summary": "The query contains critical correctness issues due to incorrect table names and implicit joins. It also has performance and readability issues due to the use of implicit join syntax and lack of comments."
+  }
+}

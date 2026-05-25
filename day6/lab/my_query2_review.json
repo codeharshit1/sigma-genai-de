@@ -1,0 +1,43 @@
+{
+  "file": "queries/my_query2.sql",
+  "reviewed_at": "2026-05-25T16:26:02.780899",
+  "issues_found": 4,
+  "review": {
+    "issues": [
+      {
+        "severity": "Critical",
+        "category": "Correctness",
+        "title": "Incorrect table usage",
+        "line": "1",
+        "problem": "The query is selecting from non-existent tables 'json_table' and 'json_table2'.",
+        "fix": "Replace 'json_table' and 'json_table2' with the correct tables from the schema."
+      },
+      {
+        "severity": "Critical",
+        "category": "Correctness",
+        "title": "Incorrect table usage",
+        "line": "2",
+        "problem": "The query is selecting from non-existent tables 'csv_table' and 'csv_table2'.",
+        "fix": "Replace 'csv_table' and 'csv_table2' with the correct tables from the schema."
+      },
+      {
+        "severity": "Medium",
+        "category": "Readability",
+        "title": "Implicit join syntax",
+        "line": "1",
+        "problem": "Using comma-separated tables in the FROM clause is an implicit join, which is less readable.",
+        "fix": "Use explicit JOIN syntax for better readability."
+      },
+      {
+        "severity": "Medium",
+        "category": "Readability",
+        "title": "Implicit join syntax",
+        "line": "2",
+        "problem": "Using comma-separated tables in the FROM clause is an implicit join, which is less readable.",
+        "fix": "Use explicit JOIN syntax for better readability."
+      }
+    ],
+    "corrected_sql": "No valid SQL to correct as the tables mentioned do not exist in the provided schema.",
+    "summary": "The provided SQL queries reference non-existent tables and use implicit join syntax, which should be corrected for readability and to align with the provided schema."
+  }
+}
