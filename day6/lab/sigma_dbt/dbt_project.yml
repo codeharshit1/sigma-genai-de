@@ -1,0 +1,17 @@
+name: 'sigma_dbt'
+version: '1.0.0'
+config-version: 2
+
+profile: 'sigma_dbt'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+macro-paths: ["macros"]
+
+models:
+   sigma_dbt:
+     staging:
+       +materialized: view
+     marts:
+       +materialized: table
