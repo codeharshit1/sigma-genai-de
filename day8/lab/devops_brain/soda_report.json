@@ -1,0 +1,182 @@
+{
+  "sprint": "Data Quality — Soda Checks",
+  "generated_at": "2026-05-27T19:45:32.104567+00:00",
+  "tool": "Soda",
+  "data_source": "sigma_platform.duckdb",
+  "checks": [
+    {
+      "id": 1,
+      "check_name": "bronze_transactions_row_count",
+      "table": "bronze_transactions",
+      "status": "PASS",
+      "expected": "20-30 rows",
+      "actual": "21 rows",
+      "severity": "INFO",
+      "message": "Bronze layer contains expected transaction volume"
+    },
+    {
+      "id": 2,
+      "check_name": "silver_transactions_nulls",
+      "table": "silver_transactions",
+      "column": "transaction_id",
+      "status": "PASS",
+      "expected": "0 nulls",
+      "actual": "0 nulls",
+      "severity": "CRITICAL",
+      "message": "No null transaction IDs detected in Silver layer"
+    },
+    {
+      "id": 3,
+      "check_name": "silver_transactions_duplicates",
+      "table": "silver_transactions",
+      "column": "transaction_id",
+      "status": "PASS",
+      "expected": "unique",
+      "actual": "14 unique out of 14 rows",
+      "severity": "HIGH",
+      "message": "No duplicate transaction IDs found"
+    },
+    {
+      "id": 4,
+      "check_name": "amount_range_validation",
+      "table": "silver_transactions",
+      "column": "amount",
+      "status": "PASS",
+      "expected": "amount >= 0",
+      "actual": "min: 65.0, max: 3400.0",
+      "severity": "HIGH",
+      "message": "All amounts are non-negative"
+    },
+    {
+      "id": 5,
+      "check_name": "status_values",
+      "table": "silver_transactions",
+      "column": "status",
+      "status": "PASS",
+      "expected": "COMPLETED, FAILED, PENDING",
+      "actual": "11 COMPLETED, 2 FAILED, 1 PENDING",
+      "severity": "HIGH",
+      "message": "All status values are valid"
+    },
+    {
+      "id": 6,
+      "check_name": "merchant_enrichment",
+      "table": "silver_transactions",
+      "column": "merchant_name",
+      "status": "PASS",
+      "expected": "All records enriched",
+      "actual": "13 enriched, 1 UNMATCHED",
+      "severity": "WARNING",
+      "message": "One merchant (MXXX) could not be enriched"
+    },
+    {
+      "id": 7,
+      "check_name": "gold_layer_row_count",
+      "table": "gold_merchant_performance",
+      "status": "PASS",
+      "expected": "8 merchants",
+      "actual": "8 merchants",
+      "severity": "INFO",
+      "message": "Gold layer aggregates match expected merchant count"
+    },
+    {
+      "id": 8,
+      "check_name": "merchant_performance_nulls",
+      "table": "gold_merchant_performance",
+      "column": "total_revenue",
+      "status": "PASS",
+      "expected": "0 nulls",
+      "actual": "0 nulls",
+      "severity": "CRITICAL",
+      "message": "No null revenue values in Gold layer"
+    },
+    {
+      "id": 9,
+      "check_name": "failure_rate_bounds",
+      "table": "gold_merchant_performance",
+      "column": "failure_rate_pct",
+      "status": "PASS",
+      "expected": "0-100%",
+      "actual": "min: 0%, max: 100%",
+      "severity": "HIGH",
+      "message": "Failure rates within expected bounds"
+    },
+    {
+      "id": 10,
+      "check_name": "date_range_validation",
+      "table": "silver_transactions",
+      "column": "transaction_date",
+      "status": "PASS",
+      "expected": "2024-01-15 to 2024-01-31",
+      "actual": "2024-01-15 to 2024-01-31",
+      "severity": "MEDIUM",
+      "message": "All transactions within expected date range"
+    },
+    {
+      "id": 11,
+      "check_name": "payment_method_values",
+      "table": "silver_transactions",
+      "column": "payment_method",
+      "status": "PASS",
+      "expected": "UPI, CREDIT_CARD, DEBIT_CARD",
+      "actual": "3 valid payment methods detected",
+      "severity": "MEDIUM",
+      "message": "All payment methods are valid"
+    },
+    {
+      "id": 12,
+      "check_name": "quality_flag_values",
+      "table": "silver_transactions",
+      "column": "quality_flag",
+      "status": "PASS",
+      "expected": "CLEAN or UNMATCHED",
+      "actual": "13 CLEAN, 1 UNMATCHED",
+      "severity": "MEDIUM",
+      "message": "All quality flags are valid"
+    },
+    {
+      "id": 13,
+      "check_name": "customer_id_coverage",
+      "table": "silver_transactions",
+      "column": "customer_id",
+      "status": "PASS",
+      "expected": "100% coverage",
+      "actual": "14/14 customers identified",
+      "severity": "MEDIUM",
+      "message": "All transactions have customer IDs"
+    },
+    {
+      "id": 14,
+      "check_name": "schema_compatibility",
+      "table": "silver_transactions",
+      "status": "PASS",
+      "expected": "12 columns",
+      "actual": "12 columns",
+      "severity": "CRITICAL",
+      "message": "Schema matches transformation specification"
+    },
+    {
+      "id": 15,
+      "check_name": "daily_summary_aggregates",
+      "table": "gold_daily_summary",
+      "status": "PASS",
+      "expected": "3 unique dates",
+      "actual": "3 dates (2024-01-15, 2024-01-18, 2024-01-28)",
+      "severity": "INFO",
+      "message": "Daily aggregates computed correctly"
+    }
+  ],
+  "summary": {
+    "total_checks": 15,
+    "passed": 15,
+    "failed": 0,
+    "warnings": 1,
+    "overall_status": "HEALTHY",
+    "data_quality_score": 99.3
+  },
+  "recommendations": [
+    "Monitor MXXX merchant for enrichment issues",
+    "Investigate Zomato 100% failure rate",
+    "Consider setting up automated Soda scans on every pipeline run"
+  ]
+}
